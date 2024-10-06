@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Image</title>
+     <!-- Bootstrap CSS -->
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 5%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            
+        }
+        .top-center {
+            margin-top: 1px;
+        }
+        .center-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: top;
+            align-items: top;
+        }
+        .centered-image {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .show-data-button {
+            position: absolute;
+            top: 10px;
+            right: 100px;
+        }
+        .top-right-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/logout" method="get" class="top-right-button">
+    <button class="btn btn-danger">Logout</button>
+    </form>
+
+    <div class="top-center">
+        <h1>Welcome to Sales Analyzer!</h1>
+        <img src="static/assets/logo.png" alt="Centered Image" class="centered-image">
+        
+    </div>
+    <div class="center-content">
+        <form action="/show_sales_data" method="get">
+            <button class= "btn btn-primary btn-lg active">Show Sales Data</button>
+        </form>
+        <h2>Please select the type of graph you want to see</h2>
+
+        <form id="graph-form">
+            <select name="graph_type" onchange="submitForm(this)">
+            <option value="" disabled selected>Select a graph type</option>
+            <option value="/sales_by_car_make">Sales by Car Make</option>
+            <option value="/sales_by_salesperson">Sales by Salesperson</option>
+            </select>
+        </form>
+
+        <script>
+            function submitForm(selectElement) {
+            const selectedValue = selectElement.value;
+            if (selectedValue) {
+                window.location.href = selectedValue;
+            }
+            }
+        </script>
+        <img src="static/graph.png" alt="Graph Image" class="centered-image">
+    </div>
+</body>
+</html>
