@@ -1,4 +1,4 @@
-# Car salesanalyzer
+# Car sales Analyzer
 """
 This project is a web application built using Flask.
 
