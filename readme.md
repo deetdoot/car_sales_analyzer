@@ -1,3 +1,4 @@
+# Car salesanalyzer
 """
 This project is a web application built using Flask.
 
@@ -20,5 +21,3 @@ Usage:
 2. Navigate to the login page and enter your credentials.
 3. Upon successful login, access your personalized dashboard to view various graphs.
 """# car-sales-analyzer
-# car-sales-analyzer
-# car_sales_analyzer
