@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')  # Use the Agg backend for non-interactive plotting
-import matplotlib.pyplot as plt
+import json
+import plotly
+import plotly.express as px
 
 
 app = Flask(__name__)
@@ -140,7 +140,7 @@ def show_sales_data(page, records_per_page):
 
 @app.route('/sales_by_salesperson', methods=['GET'])
 def sales_by_salesperson():
-
+    print("Function triggered")
     # Query the sales data from the database
     sales_data = Sales.query.all()
 
@@ -152,24 +152,18 @@ def sales_by_salesperson():
 
     # Group the data by Salesperson and sum the total price of cars sold
     sales_by_person = sales_df.groupby('Salesperson')['Sale Price'].sum()
+    # Convert the grouped data to a DataFrame
+    sales_by_person_df = sales_by_person.reset_index()
+    sales_by_person_df.columns = ['Salesperson', 'Total Sale Price']
 
-    # Create a plot without displaying it
-    plt.figure(figsize=(10, 6))
-    sales_by_person.plot(kind='bar')
+    # Create Bar chart
+    fig = px.bar(sales_by_person_df, x='Salesperson', y='Total Sale Price')
 
-    # Set the labels and title
-    plt.xlabel('Salesperson')
-    plt.ylabel('Total Sales Price')
-    plt.title('Total Sales by Salesperson')
-
-    # Save the plot as an image
-    image_path = 'static/graph.png'
-    plt.savefig(image_path)
-
-    # Close the plot to avoid displaying it
-    plt.close()
-
-    return render_template("first_page.html")
+    # Create graphJSON
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)     
+    
+    # Use render_template to pass graphJSON to html
+    return render_template('first_page.html', graphJSON=graphJSON)
 
 
 @app.route('/sales_by_car_make', methods=['GET'])
@@ -185,24 +179,21 @@ def sales_by_car_make():
 
     # Group the data by Car Make and sum the total price of cars sold
     sales_by_car_make = sales_df.groupby('Car Make')['Sale Price'].sum()
+    # Convert the grouped data to a DataFrame
+    sales_by_car_make_df = sales_by_car_make.reset_index()
+    sales_by_car_make_df.columns = ['Car Make', 'Total Sale Price']
 
-    # Create a plot without displaying it
-    plt.figure(figsize=(10, 6))
-    sales_by_car_make.plot(kind='bar')
+    # Create Bar chart
+    fig = px.bar(sales_by_car_make_df, x='Car Make', y='Total Sale Price')
+    
+    # Create graphJSON
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Set the labels and title
-    plt.xlabel('Car Make')
-    plt.ylabel('Total Sales Price')
-    plt.title('Total Sales by Car Make')
+    #
+    #return jsonify(json.loads(graphJSON))
 
-    # Save the plot as an image
-    image_path = 'static/graph.png'
-    plt.savefig(image_path)
-
-    # Close the plot to avoid displaying it
-    plt.close()
-
-    return render_template("first_page.html")
+    #return graphJSON
+    return render_template("first_page.html", graphJSON = graphJSON)
 
 @app.route('/delete_sales_record/<int:id>', methods=['POST'])
 def delete_sales_record(id):
